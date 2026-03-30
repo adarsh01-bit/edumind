@@ -1,8 +1,6 @@
 # 🧠 EduMind — AI Academic Assistant
-
-> Upload any academic PDF and chat with it using AI.
-> Get summaries, find deadlines, and ask questions — 
-> fully offline or deployed on the cloud.
+ > Built a full-stack RAG system with real-time document Q&A, semantic search, and NLP-powered deadline extraction.  
+ > An AI-powered academic assistant that lets students chat with PDFs, extract key insights, detect deadlines, and generate summaries using RAG.
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![LangChain](https://img.shields.io/badge/LangChain-1.2-green)
@@ -12,8 +10,7 @@
 ---
 
 ## 🚀 Live Demo
-👉 **[Try EduMind Here](YOUR_STREAMLIT_URL_HERE)**
-
+👉 **[Try EduMind Here](https://edumind-wephtnkbqfj9mb9mtjqbfn.streamlit.app/)**
 ---
 
 ## ✨ Features
@@ -27,6 +24,42 @@
 | ☁️ Cloud Mode | Deployed via Streamlit + Groq |
 
 ---
+
+## 🧪 Example Use Cases
+
+- Analyze university syllabus PDFs
+- Extract assignment deadlines automatically
+- Generate quick revision summaries
+- Ask questions from research papers 
+
+--- 
+
+## ⚙️ How It Works
+
+1. 📄 **PDF Upload**
+   - User uploads an academic document
+
+2. ✂️ **Text Processing**
+   - PDF text is extracted and split into smaller chunks
+
+3. 🧠 **Embedding Generation**
+   - Each chunk is converted into vector embeddings
+
+4. 🗄️ **Vector Storage**
+   - Embeddings are stored in ChromaDB for fast retrieval
+
+5. ❓ **User Query**
+   - User asks a question in natural language
+
+6. 🔍 **Semantic Search**
+   - System finds the most relevant chunks using similarity search
+
+7. 🤖 **AI Response Generation**
+   - LLM (Groq / Ollama) generates a context-aware answer
+
+8. 📊 **Extra Features**
+   - spaCy detects deadlines
+   - Summarizer generates structured insights
 
 ## 🛠️ Tech Stack
 
@@ -42,7 +75,7 @@
 ## 📦 Local Installation
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/edumind.git
+git clone https://github.com/adarsh01-bit/edumind.git
 cd edumind
 
 # Create virtual environment
@@ -68,7 +101,7 @@ streamlit run app.py
 
 Create a `.env` file for cloud deployment:
 ```
-GROQ_API_KEY=your_groq_api_key_here
+GROQ_API_KEY=groq_api_key_here
 ```
 
 ---
