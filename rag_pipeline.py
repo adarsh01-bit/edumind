@@ -78,7 +78,9 @@ def get_llm():
     """Returns correct LLM based on environment."""
 
     if USE_GROQ:
-        return ChatGroq(model=GROQ_LLM, temperature=TEMPERATURE, api_key=GROQ_API_KEY)
+        return ChatGroq(
+            model=GROQ_LLM, temperature=TEMPERATURE, api_key=os.getenv("GROQ_API_KEY")
+        )
     else:
         return ChatOllama(
             model=OLLAMA_LLM,

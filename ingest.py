@@ -11,7 +11,8 @@
 import pdfplumber  # reads PDF files
 import os  # interacts with files/folders
 import shutil  # helps delete folders
-
+from config import USE_GROQ
+from config import USE_GROQ
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # ↑ splits long text into smaller overlapping chunks
@@ -174,8 +175,18 @@ def load_chromadb():
     Used when the app starts — no need to re-process PDFs.
     """
 
+    # create embedding model based on environment
+
+    if USE_GROQ:
+        from langchain_community.embeddings import HuggingFaceEmbeddings
+
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    else:
+        from langchain_ollama import OllamaEmbeddings
+
     embeddings = OllamaEmbeddings(
-        model=EMBEDDING_MODEL, base_url="http://localhost:11434"
+        model=EMBEDDING_MODEL,
+        base_url="http://localhost:11434",
     )
 
     vectorstore = Chroma(
