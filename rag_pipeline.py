@@ -90,6 +90,8 @@ def get_llm():
         )
 
 
+print("USE_GROQ =", USE_GROQ)
+
 # ── FUNCTION 3: Load ChromaDB ─────────────────────────────
 
 
