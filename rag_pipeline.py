@@ -151,10 +151,7 @@ def ask_question(question, rag_chain, retriever):
     if not question or len(question.strip()) == 0:
         return "Please type a question.", []
 
-    # Get answer directly from chain
     answer = rag_chain.invoke(question)
-
-    # Get sources separately
     source_docs = retriever.invoke(question)
 
     return answer, source_docs
@@ -165,15 +162,19 @@ def ask_question(question, rag_chain, retriever):
 
 def format_sources(source_docs):
     formatted = []
+
     for i, doc in enumerate(source_docs):
+        metadata = getattr(doc, "metadata", {}) or {}
+
         formatted.append(
             {
                 "chunk_number": i + 1,
-                "content": doc.page_content,
-                "source": doc.metadata.get("source", "Unknown"),
-                "chunk_index": doc.metadata.get("chunk_index", "?"),
+                "content": doc.page_content if hasattr(doc, "page_content") else "",
+                "source": metadata.get("source", "Unknown"),
+                "chunk_index": metadata.get("chunk_index", "?"),
             }
         )
+
     return formatted
 
 
