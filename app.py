@@ -248,7 +248,7 @@ def process_pdf(uploaded_file):
             vectorstore = ingest_document(tmp_path, reset=True)
         # Step 3: build RAG chain
         with st.spinner("🔧 Building AI pipeline..."):
-            chain, retriever = build_rag_chain(vectorstore)
+            chain, retriever = build_rag_chain()
             st.session_state.rag_chain = chain
             st.session_state.rag_retriever = retriever
 
