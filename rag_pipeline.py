@@ -116,18 +116,18 @@ def format_docs(docs):
         f"[Section {i+1}]:\n{doc.page_content}" for i, doc in enumerate(docs)
     )
 
+    # ── FUNCTION 5: Build RAG Chain ───────────────────────────
 
-# ── FUNCTION 5: Build RAG Chain ───────────────────────────
+    def build_rag_chain():
+        vectorstore = load_vectorstore()
+        retriever = vectorstore.as_retriever(
+            search_type="similarity", search_kwargs={"k": TOP_K_CHUNKS}
+        )
 
-
-def build_rag_chain(vectorstore):
-    retriever = vectorstore.as_retriever(
-        search_type="similarity", search_kwargs={"k": TOP_K_CHUNKS}
-    )
-    llm = get_llm()
-    prompt = PromptTemplate(
-        template=QA_PROMPT_TEMPLATE, input_variables=["context", "question"]
-    )
+        llm = get_llm()
+        prompt = PromptTemplate(
+            template=QA_PROMPT_TEMPLATE, input_variables=["context", "question"]
+        )
 
     parser = StrOutputParser()
 
@@ -151,22 +151,11 @@ def ask_question(question, rag_chain, retriever):
     if not question or len(question.strip()) == 0:
         return "Please type a question.", []
 
-    # ✅ Get relevant docs first
+    # Get answer directly from chain
+    answer = rag_chain.invoke(question)
+
+    # Get sources separately
     source_docs = retriever.invoke(question)
-
-    # ✅ Convert to context
-    context = "\n\n".join([doc.page_content for doc in source_docs])
-
-    # ✅ Prevent crash
-    if not context:
-        return "No relevant information found in document.", []
-
-    # ✅ Debug (optional but useful)
-    print("QUESTION:", question)
-    print("CONTEXT LENGTH:", len(context))
-
-    # ✅ Correct invoke format
-    answer = rag_chain.invoke({"question": question, "context": context})
 
     return answer, source_docs
 
