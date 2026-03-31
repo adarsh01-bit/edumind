@@ -32,31 +32,31 @@ GROQ_LLM = "mixtral-8x7b-32768"  # free Groq model
 # ── PROMPT ───────────────────────────────────────────────
 
 QA_PROMPT_TEMPLATE = """You are EduMind, a helpful AI assistant
-for students. You help students understand their academic documents.
+    for students. You help students understand their academic documents.
 
-Use ONLY the context provided below to answer the question.
-Do not use any outside knowledge.
+    Use ONLY the context provided below to answer the question.
+    Do not use any outside knowledge.
 
-If the answer is not explicitly written in the document,
-do NOT guess or invent information.
+    If the answer is not explicitly written in the document,
+    do NOT guess or invent information.
 
-Only summarize or quote from the provided context.
+    Only summarize or quote from the provided context.
 
-If the answer is clearly present → answer directly and clearly.
-If the answer is partially present → share what you found.
-If the answer is not in the context → say exactly:
-"I couldn't find this information in the uploaded document."
+    If the answer is clearly present → answer directly and clearly.
+    If the answer is partially present → share what you found.
+    If the answer is not in the context → say exactly:
+    "I couldn't find this information in the uploaded document."
 
-Always be helpful, clear, and student-friendly.
+    Always be helpful, clear, and student-friendly.
 
-─────────────────────────────────
-CONTEXT FROM DOCUMENT:
-{context}
-─────────────────────────────────
+    ─────────────────────────────────
+    CONTEXT FROM DOCUMENT:
+    {context}
+    ─────────────────────────────────
 
-STUDENT'S QUESTION: {question}
+    STUDENT'S QUESTION: {question}
 
-YOUR ANSWER:"""
+    YOUR ANSWER:"""
 
 
 # ── FUNCTION 1: Get Embeddings ────────────────────────────
@@ -92,8 +92,8 @@ def get_llm():
             num_ctx=4096,
         )
 
+    print("USE_CLOUD =", USE_CLOUD)
 
-print("USE_CLOUD =", USE_CLOUD)
 
 # ── FUNCTION 3: Load ChromaDB ─────────────────────────────
 
@@ -101,10 +101,8 @@ print("USE_CLOUD =", USE_CLOUD)
 def load_vectorstore():
     """Loads ChromaDB with correct embeddings."""
 
-    if not os.path.exists(VECTORSTORE_DIR):
-        raise FileNotFoundError(
-            "No vectorstore found. " "Please upload and process a PDF first."
-        )
+    def load_vectorstore():
+        return None
 
     vectorstore = Chroma(embedding_function=get_embeddings())
     return vectorstore
@@ -122,20 +120,15 @@ def format_docs(docs):
 # ── FUNCTION 5: Build RAG Chain ───────────────────────────
 
 
-def build_rag_chain():
-    """Builds complete RAG pipeline."""
-
-    print("🔧 Building RAG chain...")
-
-    vectorstore = load_vectorstore()
+def build_rag_chain(vectorstore):
     retriever = vectorstore.as_retriever(
         search_type="similarity", search_kwargs={"k": TOP_K_CHUNKS}
     )
-
     llm = get_llm()
     prompt = PromptTemplate(
         template=QA_PROMPT_TEMPLATE, input_variables=["context", "question"]
     )
+
     parser = StrOutputParser()
 
     rag_chain = (

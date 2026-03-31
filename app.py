@@ -245,11 +245,10 @@ def process_pdf(uploaded_file):
 
         # Step 2: ingest into ChromaDB
         with st.spinner("🧠 Creating AI index... (2-5 mins first time)"):
-            ingest_document(tmp_path, reset=True)
-
+            vectorstore = ingest_document(tmp_path, reset=True)
         # Step 3: build RAG chain
         with st.spinner("🔧 Building AI pipeline..."):
-            chain, retriever = build_rag_chain()
+            chain, retriever = build_rag_chain(vectorstore)
             st.session_state.rag_chain = chain
             st.session_state.rag_retriever = retriever
 
