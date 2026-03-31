@@ -102,10 +102,14 @@ print("USE_CLOUD =", USE_CLOUD)
 def load_vectorstore():
     """Loads ChromaDB with correct embeddings."""
 
-    def load_vectorstore():
-        return None
+    if not os.path.exists(VECTORSTORE_DIR):
+        raise FileNotFoundError(
+            "No vectorstore found. " "Please upload and process a PDF first."
+        )
 
-    vectorstore = Chroma(embedding_function=get_embeddings())
+    vectorstore = Chroma(
+        persist_directory=VECTORSTORE_DIR, embedding_function=get_embeddings()
+    )
     return vectorstore
 
 
@@ -154,7 +158,7 @@ def ask_question(question, rag_chain, retriever):
     if not question or len(question.strip()) == 0:
         return "Please type a question.", []
 
-    answer = rag_chain.invoke({"question": question})
+    answer = rag_chain.invoke(question)
     source_docs = retriever.invoke(question)
 
     return answer, source_docs
