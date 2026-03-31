@@ -161,6 +161,17 @@ def save_to_chromadb(documents, reset=False):
             base_url="http://localhost:11434",
         )
 
+    clean_docs = []
+
+    for doc in documents:
+        if (
+            doc.page_content
+            and isinstance(doc.page_content, str)
+            and doc.page_content.strip() != ""
+        ):
+            clean_docs.append(doc)
+
+    documents = clean_docs
     vectorstore = Chroma.from_documents(
         documents=documents,
         embedding=embeddings,
