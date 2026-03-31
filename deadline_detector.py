@@ -22,8 +22,14 @@ import re  # pattern matching
 print("🔤 Loading spaCy language model...")
 import spacy
 
-nlp = spacy.load("en_core_web_sm")
-print("✅ spaCy ready")
+try:
+    nlp = spacy.load("en_core_web_sm")
+except:
+    from spacy.cli import download
+
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+    print("✅ spaCy ready")
 
 
 # ── KEYWORD MAPS FOR LABELING ─────────────────────────────
