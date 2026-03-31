@@ -154,7 +154,7 @@ def ask_question(question, rag_chain, retriever):
     if not question or len(question.strip()) == 0:
         return "Please type a question.", []
 
-    answer = rag_chain.invoke(question)
+    answer = rag_chain.invoke({"question": question})
     source_docs = retriever.invoke(question)
 
     return answer, source_docs
