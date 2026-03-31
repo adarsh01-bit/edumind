@@ -29,8 +29,9 @@ def load_nlp():
     except:
         # fallback (NO crash on cloud)
         return spacy.blank("en")
-    nlp = load_nlp()
-    print("✅ spaCy ready")
+
+
+nlp = load_nlp()
 
 
 # ── KEYWORD MAPS FOR LABELING ─────────────────────────────

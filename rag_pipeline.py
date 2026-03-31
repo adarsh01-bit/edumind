@@ -5,11 +5,12 @@ from langchain_community.vectorstores import Chroma
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableMap
+from config import USE_CLOUD, GROQ_API_KEY
+
 import os
-from config import USE_GROQ, GROQ_API_KEY
 
 # import correct LLM based on environment
-if USE_GROQ:
+if USE_CLOUD:
     from langchain_groq import ChatGroq
     from langchain_community.embeddings import HuggingFaceEmbeddings
 else:
@@ -64,7 +65,7 @@ YOUR ANSWER:"""
 def get_embeddings():
     """Returns correct embedding model based on environment."""
 
-    if USE_GROQ:
+    if USE_CLOUD:
         # use HuggingFace embeddings on cloud (free, no API)
         return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     else:
@@ -77,7 +78,7 @@ def get_embeddings():
 def get_llm():
     """Returns correct LLM based on environment."""
 
-    if USE_GROQ:
+    if USE_CLOUD:
         return ChatGroq(
             model=GROQ_LLM, temperature=TEMPERATURE, api_key=os.getenv("GROQ_API_KEY")
         )
@@ -90,7 +91,7 @@ def get_llm():
         )
 
 
-print("USE_GROQ =", USE_GROQ)
+print("USE_GROQ =", USE_CLOUD)
 
 # ── FUNCTION 3: Load ChromaDB ─────────────────────────────
 
