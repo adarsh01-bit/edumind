@@ -14,9 +14,9 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 import pdfplumber
 import os
-from config import USE_GROQ, GROQ_API_KEY
+from config import USE_CLOUD, GROQ_API_KEY
 
-if USE_GROQ:
+if USE_CLOUD:
     from langchain_groq import ChatGroq
 else:
     from langchain_ollama import ChatOllama
@@ -29,7 +29,7 @@ MAX_CHARS = 6000
 
 
 def get_llm(temperature=0.1):
-    if USE_GROQ:
+    if USE_CLOUD:
         return ChatGroq(model=GROQ_LLM, temperature=temperature, api_key=GROQ_API_KEY)
     else:
         return ChatOllama(
