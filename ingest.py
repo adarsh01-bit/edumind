@@ -33,7 +33,7 @@ from langchain_core.documents import Document
 # ── CONFIGURATION ────────────────────────────────────────
 # Settings you can change if needed
 
-VECTORSTORE_DIR = "vectorstore"  # folder to save ChromaDB data
+VECTORSTORE_DIR = "./vectorstore"  # folder to save ChromaDB data
 CHUNK_SIZE = 1000  # characters per chunk
 CHUNK_OVERLAP = 200  # overlap between chunks
 EMBEDDING_MODEL = "nomic-embed-text"  # Ollama model for embeddings
@@ -126,6 +126,8 @@ def split_into_chunks(text, file_name):
 
 # ── FUNCTION 3: Save to ChromaDB ─────────────────────────
 
+VECTORSTORE_DIR = "./vectorstore"
+
 
 def save_to_chromadb(documents, reset=False):
     """
@@ -138,7 +140,7 @@ def save_to_chromadb(documents, reset=False):
 
     print("🧠 Converting chunks to embeddings...")
     print("   (This may take 2-5 minutes for first run)")
-
+    os.makedirs(VECTORSTORE_DIR, exist_ok=True)
     # if reset is True, delete old vectorstore data
     if reset and os.path.exists(VECTORSTORE_DIR):
         shutil.rmtree(VECTORSTORE_DIR)
@@ -146,16 +148,19 @@ def save_to_chromadb(documents, reset=False):
 
     # create the embedding model connection
     # this connects to Ollama running on your Mac
-    embeddings = OllamaEmbeddings(
-        model=EMBEDDING_MODEL,
-        base_url="http://localhost:11434",  # Ollama's local address
-    )
 
-    # create ChromaDB vectorstore from our documents
-    # this automatically:
-    # 1. sends each chunk to nomic-embed-text
-    # 2. gets back a list of numbers
-    # 3. saves both text + numbers in ChromaDB
+    if USE_CLOUD:
+        from langchain_community.embeddings import HuggingFaceEmbeddings
+
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    else:
+        from langchain_ollama import OllamaEmbeddings
+
+        embeddings = OllamaEmbeddings(
+            model=EMBEDDING_MODEL,
+            base_url="http://localhost:11434",
+        )
+
     vectorstore = Chroma.from_documents(
         documents=documents, embedding=embeddings, persist_directory=VECTORSTORE_DIR
     )

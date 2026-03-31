@@ -19,7 +19,7 @@ else:
 
 # ── CONFIGURATION ────────────────────────────────────────
 
-VECTORSTORE_DIR = "vectorstore"
+VECTORSTORE_DIR = "./vectorstore"
 TOP_K_CHUNKS = 4
 TEMPERATURE = 0.1
 
