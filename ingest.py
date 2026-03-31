@@ -11,8 +11,8 @@
 import pdfplumber  # reads PDF files
 import os  # interacts with files/folders
 import shutil  # helps delete folders
-from config import USE_GROQ
-from config import USE_GROQ
+from config import USE_CLOUD
+from config import USE_CLOUD
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # ↑ splits long text into smaller overlapping chunks
@@ -177,7 +177,7 @@ def load_chromadb():
 
     # create embedding model based on environment
 
-    if USE_GROQ:
+    if USE_CLOUD:
         from langchain_community.embeddings import HuggingFaceEmbeddings
 
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
