@@ -22,13 +22,14 @@ import re  # pattern matching
 print("🔤 Loading spaCy language model...")
 import spacy
 
-try:
-    nlp = spacy.load("en_core_web_sm")
-except:
-    from spacy.cli import download
 
-    download("en_core_web_sm")
-    nlp = spacy.load("en_core_web_sm")
+def load_nlp():
+    try:
+        return spacy.load("en_core_web_sm")
+    except:
+        # fallback (NO crash on cloud)
+        return spacy.blank("en")
+    nlp = load_nlp()
     print("✅ spaCy ready")
 
 
