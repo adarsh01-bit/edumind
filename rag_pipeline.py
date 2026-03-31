@@ -26,7 +26,7 @@ TEMPERATURE = 0.1
 # model names
 OLLAMA_LLM = "llama3.2"
 OLLAMA_EMBED = "nomic-embed-text"
-GROQ_LLM = "llama3-8b-8192"  # free Groq model
+GROQ_LLM = "mixtral-8x7b-32768"  # free Groq model
 
 
 # ── PROMPT ───────────────────────────────────────────────
@@ -80,7 +80,9 @@ def get_llm():
 
     if USE_CLOUD:
         return ChatGroq(
-            model=GROQ_LLM, temperature=TEMPERATURE, api_key=os.getenv("GROQ_API_KEY")
+            groq_api_key=GROQ_API_KEY,
+            model_name=GROQ_LLM,
+            temperature=TEMPERATURE,
         )
     else:
         return ChatOllama(
@@ -91,7 +93,7 @@ def get_llm():
         )
 
 
-print("USE_GROQ =", USE_CLOUD)
+print("USE_CLOUD =", USE_CLOUD)
 
 # ── FUNCTION 3: Load ChromaDB ─────────────────────────────
 
@@ -158,8 +160,23 @@ def ask_question(question, rag_chain, retriever):
     if not question or len(question.strip()) == 0:
         return "Please type a question.", []
 
-    answer = rag_chain.invoke(question)
+    # ✅ Get relevant docs first
     source_docs = retriever.invoke(question)
+
+    # ✅ Convert to context
+    context = "\n\n".join([doc.page_content for doc in source_docs])
+
+    # ✅ Prevent crash
+    if not context:
+        return "No relevant information found in document.", []
+
+    # ✅ Debug (optional but useful)
+    print("QUESTION:", question)
+    print("CONTEXT LENGTH:", len(context))
+
+    # ✅ Correct invoke format
+    answer = rag_chain.invoke({"question": question, "context": context})
+
     return answer, source_docs
 
 
