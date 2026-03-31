@@ -33,7 +33,7 @@ from langchain_core.documents import Document
 # ── CONFIGURATION ────────────────────────────────────────
 # Settings you can change if needed
 
-VECTORSTORE_DIR = "./vectorstore"  # folder to save ChromaDB data
+VECTORSTORE_DIR = "vectorstore"  # folder to save ChromaDB data
 CHUNK_SIZE = 1000  # characters per chunk
 CHUNK_OVERLAP = 200  # overlap between chunks
 EMBEDDING_MODEL = "nomic-embed-text"  # Ollama model for embeddings
@@ -126,7 +126,7 @@ def split_into_chunks(text, file_name):
 
 # ── FUNCTION 3: Save to ChromaDB ─────────────────────────
 
-VECTORSTORE_DIR = "./vectorstore"
+VECTORSTORE_DIR = "vectorstore"
 
 
 def save_to_chromadb(documents, reset=False):
