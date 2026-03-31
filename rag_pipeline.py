@@ -106,9 +106,7 @@ def load_vectorstore():
             "No vectorstore found. " "Please upload and process a PDF first."
         )
 
-    vectorstore = Chroma(
-        persist_directory=VECTORSTORE_DIR, embedding_function=get_embeddings()
-    )
+    vectorstore = Chroma(embedding_function=get_embeddings())
     return vectorstore
 
 

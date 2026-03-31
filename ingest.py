@@ -162,7 +162,8 @@ def save_to_chromadb(documents, reset=False):
         )
 
     vectorstore = Chroma.from_documents(
-        documents=documents, embedding=embeddings, persist_directory=VECTORSTORE_DIR
+        documents=documents,
+        embedding=embeddings,
     )
 
     print(f"✅ Saved {len(documents)} chunks to ChromaDB")
