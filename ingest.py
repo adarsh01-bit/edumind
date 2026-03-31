@@ -12,7 +12,6 @@ import pdfplumber  # reads PDF files
 import os  # interacts with files/folders
 import shutil  # helps delete folders
 from config import USE_CLOUD
-from config import USE_CLOUD
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # ↑ splits long text into smaller overlapping chunks
@@ -175,6 +174,7 @@ def save_to_chromadb(documents, reset=False):
     vectorstore = Chroma.from_documents(
         documents=documents,
         embedding=embeddings,
+        persist_directory=VECTORSTORE_DIR,
     )
 
     print(f"✅ Saved {len(documents)} chunks to ChromaDB")
@@ -201,10 +201,10 @@ def load_chromadb():
     else:
         from langchain_ollama import OllamaEmbeddings
 
-    embeddings = OllamaEmbeddings(
-        model=EMBEDDING_MODEL,
-        base_url="http://localhost:11434",
-    )
+        embeddings = OllamaEmbeddings(
+            model=EMBEDDING_MODEL,
+            base_url="http://localhost:11434",
+        )
 
     vectorstore = Chroma(
         persist_directory=VECTORSTORE_DIR, embedding_function=embeddings
