@@ -92,7 +92,8 @@ def get_llm():
             num_ctx=4096,
         )
 
-    print("USE_CLOUD =", USE_CLOUD)
+
+print("USE_CLOUD =", USE_CLOUD)
 
 
 # ── FUNCTION 3: Load ChromaDB ─────────────────────────────
@@ -116,18 +117,20 @@ def format_docs(docs):
         f"[Section {i+1}]:\n{doc.page_content}" for i, doc in enumerate(docs)
     )
 
-    # ── FUNCTION 5: Build RAG Chain ───────────────────────────
 
-    def build_rag_chain():
-        vectorstore = load_vectorstore()
-        retriever = vectorstore.as_retriever(
-            search_type="similarity", search_kwargs={"k": TOP_K_CHUNKS}
-        )
+# ── FUNCTION 5: Build RAG Chain ───────────────────────────
 
-        llm = get_llm()
-        prompt = PromptTemplate(
-            template=QA_PROMPT_TEMPLATE, input_variables=["context", "question"]
-        )
+
+def build_rag_chain():
+    vectorstore = load_vectorstore()
+    retriever = vectorstore.as_retriever(
+        search_type="similarity", search_kwargs={"k": TOP_K_CHUNKS}
+    )
+
+    llm = get_llm()
+    prompt = PromptTemplate(
+        template=QA_PROMPT_TEMPLATE, input_variables=["context", "question"]
+    )
 
     parser = StrOutputParser()
 
