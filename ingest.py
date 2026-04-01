@@ -125,62 +125,46 @@ def split_into_chunks(text, file_name):
 
 # ── FUNCTION 3: Save to ChromaDB ─────────────────────────
 
-VECTORSTORE_DIR = "vectorstore"
-
 
 def save_to_chromadb(documents, reset=False):
     """
-    Converts each chunk to a number vector using Ollama,
-    then saves everything in ChromaDB locally.
-
-    reset=True  → deletes old data before saving (fresh start)
-    reset=False → adds to existing data (keep old PDFs)
+    Cloud: saves ChromaDB in memory (Streamlit Cloud = readonly disk)
+    Local: saves ChromaDB to disk as before
     """
 
     print("🧠 Converting chunks to embeddings...")
-    print("   (This may take 2-5 minutes for first run)")
-    os.makedirs(VECTORSTORE_DIR, exist_ok=True)
-    # if reset is True, delete old vectorstore data
-    if reset and os.path.exists(VECTORSTORE_DIR):
-        shutil.rmtree(VECTORSTORE_DIR)
-        print("🗑️  Cleared old vectorstore")
-
-    # create the embedding model connection
-    # this connects to Ollama running on your Mac
 
     if USE_CLOUD:
+        # ── CLOUD MODE: in-memory ChromaDB ──────────────
+        # Streamlit Cloud filesystem is readonly
+        # so we store everything in RAM instead
         from langchain_community.embeddings import HuggingFaceEmbeddings
 
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        vectorstore = Chroma.from_documents(
+            documents=documents,
+            embedding=embeddings,
+            # NO persist_directory = stays in memory
+        )
+        print(f"✅ Saved {len(documents)} chunks to memory")
+        return vectorstore
+
     else:
-        from langchain_ollama import OllamaEmbeddings
+        # ── LOCAL MODE: save to disk as normal ──────────
+        if reset and os.path.exists(VECTORSTORE_DIR):
+            shutil.rmtree(VECTORSTORE_DIR)
+            print("🗑️  Cleared old vectorstore")
+
+        os.makedirs(VECTORSTORE_DIR, exist_ok=True)
 
         embeddings = OllamaEmbeddings(
-            model=EMBEDDING_MODEL,
-            base_url="http://localhost:11434",
+            model=EMBEDDING_MODEL, base_url="http://localhost:11434"
         )
-
-    clean_docs = []
-
-    for doc in documents:
-        if (
-            doc.page_content
-            and isinstance(doc.page_content, str)
-            and doc.page_content.strip() != ""
-        ):
-            clean_docs.append(doc)
-
-    documents = clean_docs
-    vectorstore = Chroma.from_documents(
-        documents=documents,
-        embedding=embeddings,
-        persist_directory=VECTORSTORE_DIR,
-    )
-
-    print(f"✅ Saved {len(documents)} chunks to ChromaDB")
-    print(f"📁 Data stored in: {VECTORSTORE_DIR}/")
-
-    return vectorstore
+        vectorstore = Chroma.from_documents(
+            documents=documents, embedding=embeddings, persist_directory=VECTORSTORE_DIR
+        )
+        print(f"✅ Saved {len(documents)} chunks to disk")
+        return vectorstore
 
 
 # ── FUNCTION 4: Load Existing ChromaDB ───────────────────
